@@ -47,3 +47,20 @@ Navrhnutý bol **hviezdicový model (star schema)**, pre efektívnu analýzu kde
 
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. 
 Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
+
+![Obrázok 2 hviezdicová schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/star__scheme.png)
+
+            * *Obrázok 2 hviezdicová schéma Chinnok* *
+
+## 3. ETL proces v Snowflake
+
+ETL proces zahŕňal tri kľúčové fázy: `extrakciu` (Extract), `transformáciu` (Transform) a `načítanie` (Load). 
+Tento proces bol implementovaný v Snowflake s cieľom spracovať zdrojové dáta zo staging vrstvy a pripraviť ich na viacdimenzionálny model, ktorý je vhodný na analýzu a vizualizáciu.
+
+### 3.1 Extract (Extrahovanie dát)
+
+Dáta zo zdrojového datasetu (formát `.csv`) boli najprv nahraté do Snowflake prostredníctvom interného stage úložiska s názvom `my_stage`. Stage v Snowflake slúži ako dočasné úložisko na import alebo export dát. Vytvorenie stage bolo zabezpečené príkazom:
+**Príklad kódu:**
+```sql
+CREATE OR REPLACE STAGE my_stage;
+```
