@@ -31,4 +31,6 @@ Dataset obsahuje desať hlavných tabuliek:
 
 Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na **entitno-relačnom diagrame (ERD)**:
 
-![Obrázok 1 Entitno-relačná schéma Chinnok](https://edu.ukf.sk/pluginfile.php/529861/mod_folder/content/0/Chinook_ERD.png?forcedownload=1)
+![Obrázok 1 Entitno-relačná schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/Chinook_ERD.png)
+
+## 2. Dimenzionálny model
