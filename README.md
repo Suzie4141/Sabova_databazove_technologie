@@ -9,4 +9,26 @@ Výsledný dátový model umožňuje multidimenzionálnu analýzu a vizualizáci
 Cieľom semestrálneho projektu je analyzovať dáta týkajúce sa nakupovania piesní používateľmi.
 Táto analýza umožňuje identifikovať trendy v preferenciách žánrov, najpopulárnejších autorov a ich piesní a správanie používateľov.
 
-Zdrojové dáta pochádzajú z 
+Zdrojové dáta pochádzajú z Github datasetu dostupného [tu](https://github.com/lerocha/chinook-database/tree/master). 
+Dataset obsahuje desať hlavných tabuliek:
+
+- Employee
+- Customer
+- Invoice
+- InvoiceLine
+- Playlist
+- Genre
+- MediaType
+- Album
+- Artist
+- Track
+
+Účelom ETL procesu bolo tieto dáta pripraviť, transformovať a sprístupniť pre viacdimenzionálnu analýzu.
+
+### 1.1 Dátová architektúra
+
+### ERD diagram
+
+Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na **entitno-relačnom diagrame (ERD)**:
+
+![Obrázok 1 Entitno-relačná schéma Chinnok](https://edu.ukf.sk/pluginfile.php/529861/mod_folder/content/0/Chinook_ERD.png?forcedownload=1)
