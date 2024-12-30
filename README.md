@@ -33,7 +33,7 @@ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na **e
 
 ![Obrázok 1 Entitno-relačná schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/Chinook_ERD.png)
 
-               *Obrázok 1 Entitno-relačná schéma Chinnok* 
+               _Obrázok 1 Entitno-relačná schéma Chinnok_
 
 ## 2. Dimenzionálny model
 
@@ -50,7 +50,7 @@ Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednoduš
 
 ![Obrázok 2 hviezdicová schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/star__scheme.png)
 
-             *Obrázok 2 hviezdicová schéma Chinnok* 
+             _Obrázok 2 hviezdicová schéma Chinnok_ 
 
 ## 3. ETL proces v Snowflake
 
