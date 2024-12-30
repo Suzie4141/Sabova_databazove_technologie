@@ -33,7 +33,7 @@ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na **e
 
 ![Obrázok 1 Entitno-relačná schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/Chinook_ERD.png)
 
-               _Obrázok 1 Entitno-relačná schéma Chinnok_
+               `_Obrázok 1 Entitno-relačná schéma Chinnok_`
 
 ## 2. Dimenzionálny model
 
@@ -50,7 +50,7 @@ Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednoduš
 
 ![Obrázok 2 hviezdicová schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/star__scheme.png)
 
-             _Obrázok 2 hviezdicová schéma Chinnok_ 
+            `_Obrázok 2 hviezdicová schéma Chinnok_`
 
 ## 3. ETL proces v Snowflake
 
@@ -62,5 +62,19 @@ Tento proces bol implementovaný v Snowflake s cieľom spracovať zdrojové dát
 Dáta zo zdrojového datasetu (formát `.csv`) boli najprv nahraté do Snowflake prostredníctvom interného stage úložiska s názvom `my_stage`. Stage v Snowflake slúži ako dočasné úložisko na import alebo export dát. Vytvorenie stage bolo zabezpečené príkazom:
 **Príklad kódu:**
 ```sql
-CREATE OR REPLACE STAGE my_stage;
+CREATE STAGE KOALA_chinook_stage;
 ```
+Do stage boli následne nahraté súbory obsahujúce údaje o pesničkách, používateľoch, žánroch, zamestnancoch, playlistoch, hudobníkoch. Dáta boli importované do staging tabuliek pomocou príkazu `COPY INTO`. Pre každú tabuľku sa použil podobný príkaz:
+```sql
+COPY INTO album
+FROM @KOALA_chinook_stage
+FILES = ('album.csv')
+FILE_FORMAT = (FORMAT_NAME = MYPIPEFORMAT)
+ON_ERROR = CONTINUE;
+```
+V prípade nekonzistentných záznamov bol použitý parameter `ON_ERROR = 'CONTINUE'`, ktorý zabezpečil pokračovanie procesu bez prerušenia pri chybách.
+
+### 3.1 Transfor (Transformácia dát)
+
+V tejto fáze boli dáta zo staging tabuliek vyčistené, transformované a obohatené. 
+Hlavným cieľom bolo pripraviť dimenzie a faktovú tabuľku, ktoré umožnia jednoduchú a efektívnu analýzu.
