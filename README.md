@@ -48,7 +48,7 @@ Navrhnutý bol **hviezdicový model (star schema)**, pre efektívnu analýzu kde
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. 
 Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
-![Obrázok 2 hviezdicová schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/star__scheme.png)
+![Obrázok 2 hviezdicová schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/star_scheme.png)
 
 Obrázok 2 hviezdicová schéma Chinnok
 
