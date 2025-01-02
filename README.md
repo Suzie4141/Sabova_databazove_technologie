@@ -78,3 +78,89 @@ V prípade nekonzistentných záznamov bol použitý parameter `ON_ERROR = 'CONT
 
 V tejto fáze boli dáta zo staging tabuliek vyčistené, transformované a obohatené. 
 Hlavným cieľom bolo pripraviť dimenzie a faktovú tabuľku, ktoré umožnia jednoduchú a efektívnu analýzu.
+
+Dimenzie boli navrhnuté na poskytovanie kontextu pre faktovú tabuľku.
+`Dim_track` obsahuje údaje o piesňach, ich autoroch, dĺžke, žánru.
+Táto dimenzia je typu SCD 1, pretože tabuľka obsahuje iba aktuálny stav údajov.
+```sql
+CREATE TABLE dim_track AS
+SELECT 
+    t.TrackId,
+    t.Name,
+    t.Composer,
+    t.Milliseconds,
+    t.Bytes,
+    p.Name AS Playlist,
+    g.Name AS Genre,
+    m.Name AS MediaType,
+    al.Title AS Album,
+    a.Name AS Artist
+FROM Track t
+INNER JOIN Album al ON t.AlbumId = al.AlbumId  
+INNER JOIN Artist a ON al.ArtistId = a.ArtistId  
+INNER JOIN Genre g ON t.GenreId = g.GenreId  
+INNER JOIN MediaType m ON t.MediaTypeId = m.MediaTypeId 
+INNER JOIN PlaylistTrack pt ON t.TrackId = pt.TrackId  
+INNER JOIN Playlist p ON pt.PlaylistId = p.PlaylistId;
+```
+
+Dimenzia `dim_date` je navrhnutá tak, aby uchovávala údaje o dátumoch faktúr spolu s odvodenými informáciami, ako sú deň, mesiac, rok, deň v týždni (v textovej aj číselnej podobe) a štvrťrok. Táto dimenzia umožňuje podrobné časové analýzy, ako napríklad identifikáciu trendov podľa dní, mesiacov alebo rokov. Z pohľadu SCD je klasifikovaná ako SCD Typ 0, čo znamená, že existujúce záznamy sú nemenné a obsahujú statické informácie.
+
+Ak by však vznikla potreba sledovať zmeny v odvodených atribútoch, napríklad v rozlíšení medzi pracovnými dňami a sviatkami, mohlo by sa zvážiť preklasifikovanie na SCD Typ 1 (aktualizácia hodnôt) alebo SCD Typ 2 (uchovávanie histórie zmien). V súčasnom modeli takáto požiadavka nie je, a preto je dim_date navrhnutá ako SCD Typ 0 s možnosťou pridávania nových záznamov podľa potreby.
+```sql
+CREATE TABLE dim_date AS
+SELECT
+    ROW_NUMBER() OVER (ORDER BY CAST(InvoiceDate AS DATE)) AS dim_dateID,
+    CAST(InvoiceDate AS DATE) AS date,
+    DATE_PART(day, InvoiceDate) AS day,
+    DATE_PART(dow, InvoiceDate) + 1 AS dayOfWeek,
+    CASE DATE_PART(dow, InvoiceDate) + 1
+        WHEN 1 THEN 'Pondelok'
+        WHEN 2 THEN 'Utorok'
+        WHEN 3 THEN 'Streda'
+        WHEN 4 THEN 'Štvrtok'
+        WHEN 5 THEN 'Piatok'
+        WHEN 6 THEN 'Sobota'
+        WHEN 7 THEN 'Nedeľa'
+    END AS dayOfWeekAsString,
+    DATE_PART(month, InvoiceDate) AS month,
+    DATE_PART(year, InvoiceDate) AS year,
+    DATE_PART(quarter, InvoiceDate) AS quarter
+FROM Invoice;
+```
+
+Dimenzia `dim_time` je navrhnutá tak, aby uchovávala odvodené časové údaje spojené s fakturáciou, ako je konkrétny čas, časové obdobie (AM/PM) a hodina dňa. Tieto údaje sú odvodené priamo z fakturačných časových pečiatok a sú optimalizované pre časové analýzy. Typické využitie tejto dimenzie zahŕňa analýzy trendov podľa časových intervalov, ako napríklad identifikáciu špičkových hodín predaja, sledovanie výkonnosti v rôznych časových obdobiach dňa alebo porovnávanie správania zákazníkov v rôznych časových rámcoch.
+Preto je dim_time tiež klasifikovaná ako SCD Typ 0. To znamená, že raz vložené údaje zostávajú nemenné a odrážajú pôvodné časové údaje zo zdrojových záznamov. Tieto údaje sú považované za statické, pretože časové informácie, ako hodina alebo časové obdobie (AM/PM), sa nemenia a nie sú ovplyvnené budúcimi aktualizáciami zdrojových systémov.
+
+Dimenzia `dim_employee` je navrhnutá na uchovávanie informácií o zamestnancoch spoločnosti, vrátane ich osobných a pracovných údajov, ako sú meno, priezvisko, email, telefónne číslo, adresa, pracovná pozícia (titul), dátum nástupu do práce a lokalita (mesto a štát). Tieto údaje umožňujú rôzne typy analýz, ako je sledovanie výkonu zamestnancov, geografické rozloženie zamestnancov alebo analýza trendov zamestnanosti na základe nástupu nových pracovníkov. Dimenzia je klasifikovaná ako SCD Typ 1. Ak by vznikla potreba sledovať históriu zmien zamestnaneckých údajov, bolo by potrebné prehodnotiť návrh a implementovať SCD Typ 2, aby bolo možné uchovávať viacero verzií údajov pre jedného zamestnanca.
+```sql
+CREATE TABLE dim_employee AS
+SELECT
+    EmployeeId,
+    FirstName,
+    LastName,
+    Email,
+    Phone,
+    Address,
+    Title,
+    HireDate,
+    City,
+    State,
+    ROW_NUMBER() OVER (ORDER BY EmployeeId) AS dim_idEmployee 
+FROM Employee;
+```
+Dimenzia `dim_customer` je tiež klasifikovná ako SCD Typ 1. Ak by však vznikla potreba sledovať históriu zmien údajov, bolo by možné návrh upraviť na SCD Typ 2.
+Dimenzia je navrhnutá na uchovávanie informácií o zákazníkoch, ktoré zahŕňajú ich identifikátory a kontaktné údaje. Medzi atribúty patria meno, priezvisko, email, adresa, mesto, štát, poštové smerovacie číslo, telefónne číslo a fax. Tieto údaje sú dôležité pre analýzu správania zákazníkov, geografické segmentovanie, personalizáciu marketingových kampaní a ďalšie obchodné rozhodovania.
+
+Faktová tabuľka `Facts_table` je navrhnutá tak, aby uchovávala podrobné transakčné údaje súvisiace s fakturáciou a predajom.
+Táto tabuľka obsahuje fakty, ktoré predstavujú merateľné hodnoty (množstvo, cena), ako aj kľúče prepojujúce tieto fakty s relevantnými dimenziami.
+```sql
+CREATE TABLE Facts_table AS
+SELECT
+    IL.InvoiceLineId,
+    IL.UnitPrice,
+    IL.Quantity,
+    I.Total
+FROM InvoiceLine IL
+INNER JOIN Invoice I ON IL.InvoiceId = I.InvoiceId;
+```
