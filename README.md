@@ -74,7 +74,7 @@ ON_ERROR = CONTINUE;
 ```
 V prípade nekonzistentných záznamov bol použitý parameter `ON_ERROR = 'CONTINUE'`, ktorý zabezpečil pokračovanie procesu bez prerušenia pri chybách.
 
-### 3.1 Transfor (Transformácia dát)
+### 3.2 Transfor (Transformácia dát)
 
 V tejto fáze boli dáta zo staging tabuliek vyčistené, transformované a obohatené. 
 Hlavným cieľom bolo pripraviť dimenzie a faktovú tabuľku, ktoré umožnia jednoduchú a efektívnu analýzu.
@@ -164,3 +164,24 @@ SELECT
 FROM InvoiceLine IL
 INNER JOIN Invoice I ON IL.InvoiceId = I.InvoiceId;
 ```
+### 3.3 Load (Načítanie dát)
+
+Po úspešnom vytvorení dimenzií a faktovej tabuľky boli dáta presunuté do finálnej štruktúry.
+Následne boli staging tabuľky odstránené s cieľom optimalizovať využitie úložného priestoru.
+```sql
+DROP TABLE IF EXISTS invoice_staging;
+DROP TABLE IF EXISTS invoiceline_staging;
+DROP TABLE IF EXISTS track_staging;
+DROP TABLE IF EXISTS playlisttrack_staging;
+DROP TABLE IF EXISTS playlist_staging;
+DROP TABLE IF EXISTS mediatype_staging;
+DROP TABLE IF EXISTS genre_staging;
+DROP TABLE IF EXISTS emplyee_staging;
+DROP TABLE IF EXISTS customer_staging;
+DROP TABLE IF EXISTS artist_staging;
+DROP TABLE IF EXISTS album_staging;
+```
+
+ETL proces v Snowflake umožnil spracovanie pôvodných dát z formátu .csv do viacdimenzionálneho modelu typu hviezda. Tento proces zahŕňal kroky ako čistenie, obohacovanie a reorganizáciu údajov. Výsledný model poskytuje možnosť analýzy čitateľských preferencií a správania používateľov, pričom tvorí pevný základ pre vizualizácie a reporty.
+## 4 Vizualizácia dát
+Dashboard obsahuje 6 vizualizácií, ktoré poskytujú prehľad o kľúčových metrikách a trendoch týkajúcich sa kníh, používateľov a hodnotení. Tieto vizualizácie odpovedajú na dôležité otázky a umožňujú lepšie pochopiť správanie používateľov a ich preferencie, čím poskytujú cenné informácie pre optimalizáciu ponuky a zlepšenie používateľskej skúsenosti.
