@@ -183,5 +183,48 @@ DROP TABLE IF EXISTS album_staging;
 ```
 
 ETL proces v Snowflake umožnil spracovanie pôvodných dát z formátu .csv do viacdimenzionálneho modelu typu hviezda. Tento proces zahŕňal kroky ako čistenie, obohacovanie a reorganizáciu údajov. Výsledný model poskytuje možnosť analýzy čitateľských preferencií a správania používateľov, pričom tvorí pevný základ pre vizualizácie a reporty.
-## 4 Vizualizácia dát
+## 4. Vizualizácia dát
 Dashboard obsahuje 6 vizualizácií, ktoré poskytujú prehľad o kľúčových metrikách a trendoch týkajúcich sa kníh, používateľov a hodnotení. Tieto vizualizácie odpovedajú na dôležité otázky a umožňujú lepšie pochopiť správanie používateľov a ich preferencie, čím poskytujú cenné informácie pre optimalizáciu ponuky a zlepšenie používateľskej skúsenosti.
+
+
+### Najpopulárnejší interpreti podľa predaja (Top 10)
+Táto vizualizácia zobrazuje 10 interpretov s najväčším počtom predaných piesní. Umožňuje identifikovať najpopulárnejšie tituly medzi používateľmi. Zistíme napríklad, že kapela Deep Purple má výrazne viac  predaných piesní v porovnaní s ostatnými interpretmi. Tieto informácie môžu byť užitočné na odporúčanie piesní alebo marketingové kampane.
+```sql
+SELECT 
+    a.Name AS Artist,
+    COUNT(*) AS Total
+FROM 
+    Facts_table f
+INNER JOIN dim_track t ON f.InvoiceLineId = t.TrackId
+INNER JOIN Artist a ON t.Artist = a.Name
+GROUP BY a.Name
+ORDER BY Total DESC
+LIMIT 10; 
+```
+### Predaj za posledné roky
+Táto vizualizácia zobrazuje predaj v posledných rokoch.Tieto výsledky poskytujú cenné informácie o sezónnych trendoch a výkyvoch predaja. Môžu byť použité na optimalizáciu marketingových stratégií a zvýšenie tržieb počas významných dní.
+```sql
+SELECT 
+    d.year AS Year,
+    SUM(f.Total) AS TotalSales
+FROM 
+    Facts_table f
+INNER JOIN dim_date d ON f.InvoiceLineId = d.dim_dateID
+GROUP BY d.year
+ORDER BY TotalSales DESC
+LIMIT 5;
+```
+### Najpopulárnejšie žánre a počet piesní v jednotlivých žánroch
+Tento graf zobrazuje porovnanie popularity hudobných žánrov z rôznych uhlov a môže poskytnúť cenné informácie pre rozhodovanie v oblasti predaja, marketingu a trendov v hudobnom priemysle. Môže ovplyvniť stratégie vydania nových skladieb alebo albumov.
+```sql
+SELECT 
+    g.Name AS Genre,
+    SUM(f.Total) AS TotalSales,
+    COUNT(t.TrackId) AS NumberOfTracks
+FROM 
+    Facts_table f
+INNER JOIN dim_track t ON f.InvoiceLineId = t.TrackId
+INNER JOIN Genre g ON t.Genre = g.Name
+GROUP BY g.Name
+ORDER BY TotalSales DESC;
+```
