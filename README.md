@@ -186,7 +186,8 @@ DROP TABLE IF EXISTS album_staging;
 ETL proces v Snowflake umožnil spracovanie pôvodných dát z formátu .csv do viacdimenzionálneho modelu typu hviezda. Tento proces zahŕňal kroky ako čistenie, obohacovanie a reorganizáciu údajov. Výsledný model poskytuje možnosť analýzy čitateľských preferencií a správania používateľov, pričom tvorí pevný základ pre vizualizácie a reporty.
 ---
 ## 4. Vizualizácia dát
-Dashboard obsahuje 6 vizualizácií, ktoré poskytujú prehľad o kľúčových metrikách a trendoch týkajúcich sa kníh, používateľov a hodnotení. Tieto vizualizácie odpovedajú na dôležité otázky a umožňujú lepšie pochopiť správanie používateľov a ich preferencie, čím poskytujú cenné informácie pre optimalizáciu ponuky a zlepšenie používateľskej skúsenosti.
+Dashboard obsahuje `6 vizualizácií`, ktoré poskytujú prehľad o kľúčových metrikách a trendoch týkajúcich sa kníh, používateľov a hodnotení. Tieto vizualizácie odpovedajú na dôležité otázky a umožňujú lepšie pochopiť správanie používateľov a ich preferencie, čím poskytujú cenné informácie pre optimalizáciu ponuky a zlepšenie používateľskej skúsenosti.
+
 
 
 ### Najpopulárnejší interpreti podľa predaja (Top 10)
@@ -231,7 +232,7 @@ GROUP BY g.Name
 ORDER BY TotalSales DESC;
 ```
 ### Počet zákazníkov v jednotlivých krajinách
-Tento graf zobrazuje po4et zákazníkov v jednotlivých krajinách. Údaj o počte zákazníkov v jednotlivých krajinách ti pomôže identifikovať silné a slabé trhy, prispôsobiť marketingové a obchodné stratégie, plánovať investície, sledovať lokálne trendy, diverzifikovať riziká a personalizovať ponuky pre efektívnejší rast a lepšie rozhodovanie.
+Tento graf zobrazuje počet zákazníkov v jednotlivých krajinách. Údaj o počte zákazníkov v jednotlivých krajinách ti pomôže identifikovať silné a slabé trhy, prispôsobiť marketingové a obchodné stratégie, plánovať investície, sledovať lokálne trendy, diverzifikovať riziká a personalizovať ponuky pre efektívnejší rast a lepšie rozhodovanie.
 ```sql
 SELECT 
     Country,
@@ -241,4 +242,32 @@ GROUP BY Country
 ORDER BY  num_customers DESC
 LIMIT 10;
 ```
-###
+### Vzdelanie zamestancov
+Graf zobrazujúci tituly zamestnancov umožňuje rýchlo identifikovať, ktoré pozície sú v organizácii najbežnejšie, čo môže pomôcť pri optimalizácii personálnych zdrojov, rozhodovaní o nábore alebo školení. Pomáha získať prehľad o rozdelení zamestnancov, čo môže byť užitočné pri strategickom plánovaní, organizovaní tímov a sledovaní trendov v priebehu času. Okrem toho poskytne cenné informácie na zlepšenie efektivity, podporu organizácie a uľahčenie interných komunikácií, keďže bude vidieť, ktoré tímy alebo osoby sú zodpovedné za konkrétne úlohy.
+```sql
+SELECT 
+    Title, 
+    COUNT(*) AS EmployeeCount
+FROM 
+    dim_employee
+GROUP BY 
+    Title
+ORDER BY 
+    EmployeeCount DESC;
+```
+### Dĺžka piesní
+Graf, ktorý zobrazuje počet piesní podľa ich dĺžky, poskytuje prehľad o tom, aké dĺžky sú v organizácii najbežnejšie, čo môže byť užitočné pri analýze trendov v hudbe, optimalizácii playlistov a správe dát. Pomôže ti identifikovať, či sú niektoré dĺžky piesní dominantné, čo môže ovplyvniť výber hudby podľa preferencií poslucháčov alebo účelu playlistu. Tento graf tiež umožňuje efektívne porovnávať rôzne kategórie piesní podľa ich trvania, čo môže byť relevantné pre organizačné rozhodnutia týkajúce sa distribúcie, nahrávania alebo streamovania hudby.
+
+```sql
+SELECT 
+    t.Milliseconds,
+    COUNT(*) AS SongCount
+FROM 
+    dim_track t
+GROUP BY 
+    t.Milliseconds
+ORDER BY 
+    SongCount DESC;
+```
+
+---
