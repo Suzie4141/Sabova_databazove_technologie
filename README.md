@@ -34,7 +34,7 @@ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na **e
 ![Obrázok 1 Entitno-relačná schéma Chinnok](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/Chinook_ERD.png)
 
 Obrázok 1 Entitno-relačná schéma Chinnok
-
+---
 ## 2. Dimenzionálny model
 
 Navrhnutý bol **hviezdicový model (star schema)**, pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka `Facts_table` ,ktorá pozostáva z údajov tabuľky InvoiceLine.
@@ -52,6 +52,7 @@ Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednoduš
 
 Obrázok 2 hviezdicová schéma Chinnok
 
+---
 ## 3. ETL proces v Snowflake
 
 ETL proces zahŕňal tri kľúčové fázy: `extrakciu` (Extract), `transformáciu` (Transform) a `načítanie` (Load). 
@@ -183,6 +184,7 @@ DROP TABLE IF EXISTS album_staging;
 ```
 
 ETL proces v Snowflake umožnil spracovanie pôvodných dát z formátu .csv do viacdimenzionálneho modelu typu hviezda. Tento proces zahŕňal kroky ako čistenie, obohacovanie a reorganizáciu údajov. Výsledný model poskytuje možnosť analýzy čitateľských preferencií a správania používateľov, pričom tvorí pevný základ pre vizualizácie a reporty.
+---
 ## 4. Vizualizácia dát
 Dashboard obsahuje 6 vizualizácií, ktoré poskytujú prehľad o kľúčových metrikách a trendoch týkajúcich sa kníh, používateľov a hodnotení. Tieto vizualizácie odpovedajú na dôležité otázky a umožňujú lepšie pochopiť správanie používateľov a ich preferencie, čím poskytujú cenné informácie pre optimalizáciu ponuky a zlepšenie používateľskej skúsenosti.
 
@@ -228,3 +230,15 @@ INNER JOIN Genre g ON t.Genre = g.Name
 GROUP BY g.Name
 ORDER BY TotalSales DESC;
 ```
+### Počet zákazníkov v jednotlivých krajinách
+Tento graf zobrazuje po4et zákazníkov v jednotlivých krajinách. Údaj o počte zákazníkov v jednotlivých krajinách ti pomôže identifikovať silné a slabé trhy, prispôsobiť marketingové a obchodné stratégie, plánovať investície, sledovať lokálne trendy, diverzifikovať riziká a personalizovať ponuky pre efektívnejší rast a lepšie rozhodovanie.
+```sql
+SELECT 
+    Country,
+    COUNT(CustomerId) AS num_customers
+FROM Customer
+GROUP BY Country
+ORDER BY  num_customers DESC
+LIMIT 10;
+```
+###
