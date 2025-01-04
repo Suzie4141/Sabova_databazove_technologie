@@ -189,7 +189,8 @@ ETL proces v Snowflake umožnil spracovanie pôvodných dát z formátu .csv do 
 ## 4. Vizualizácia dát
 Dashboard obsahuje `6 vizualizácií`, ktoré poskytujú prehľad o kľúčových metrikách a trendoch týkajúcich sa kníh, používateľov a hodnotení. Tieto vizualizácie odpovedajú na dôležité otázky a umožňujú lepšie pochopiť správanie používateľov a ich preferencie, čím poskytujú cenné informácie pre optimalizáciu ponuky a zlepšenie používateľskej skúsenosti.
 
-
+![Obrázok 3 vizualizácia dát](https://github.com/Suzie4141/Sabova_databazove_technologie/blob/main/grafy.png)
+Obrázok 3 vizualizácia dát
 
 ### Najpopulárnejší interpreti podľa predaja (Top 10)
 Táto vizualizácia zobrazuje 10 interpretov s najväčším počtom predaných piesní. Umožňuje identifikovať najpopulárnejšie tituly medzi používateľmi. Zistíme napríklad, že kapela Deep Purple má výrazne viac  predaných piesní v porovnaní s ostatnými interpretmi. Tieto informácie môžu byť užitočné na odporúčanie piesní alebo marketingové kampane.
