@@ -273,3 +273,4 @@ ORDER BY
 ```
 
 ---
+**Autor:** Zuzana Sabová
