@@ -294,9 +294,18 @@ SELECT
     IL.InvoiceLineId,
     IL.UnitPrice,
     IL.Quantity,
-    I.Total
+    I.Total,
+    CASE
+        WHEN I.Total >= 0 AND I.Total < 5 THEN '0-5 EUR'
+        WHEN I.Total >= 5 AND I.Total < 10 THEN '5-10 EUR'
+        WHEN I.Total >= 10 AND I.Total < 15 THEN '10-15 EUR'
+        WHEN I.Total >= 15 AND I.Total < 20 THEN '15-20 EUR'
+        WHEN I.Total >= 20 AND I.Total < 25 THEN '20-25 EUR'
+        ELSE 'Nad 25 EUR' 
+    END AS Total_Category
 FROM InvoiceLine IL
 INNER JOIN Invoice I ON IL.InvoiceId = I.InvoiceId;
+
 
 -- Vytvorí dimenziu pre piesne (dim_track) s ďalšími informáciami o piesňach
 CREATE TABLE dim_track AS
